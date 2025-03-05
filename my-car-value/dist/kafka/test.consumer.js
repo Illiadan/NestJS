@@ -9,29 +9,31 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppService = void 0;
+exports.TestConsumer = void 0;
 const common_1 = require("@nestjs/common");
-const producer_service_1 = require("./kafka/producer.service");
-let AppService = class AppService {
-    producerService;
-    constructor(producerService) {
-        this.producerService = producerService;
+const consumer_service_1 = require("./consumer.service");
+let TestConsumer = class TestConsumer {
+    consumerSercive;
+    constructor(consumerSercive) {
+        this.consumerSercive = consumerSercive;
     }
-    async getHello() {
-        await this.producerService.produce({
-            topic: 'test',
-            messages: [
-                {
-                    value: 'Hello World',
-                },
-            ],
+    async onModuleInit() {
+        await this.consumerSercive.consume({
+            topics: ['test'],
+        }, {
+            eachMessage: async ({ topic, partition, message }) => {
+                console.log({
+                    value: message.value?.toString(),
+                    topic: topic.toString(),
+                    partition: partition.toString(),
+                });
+            },
         });
-        return 'Hello World!';
     }
 };
-exports.AppService = AppService;
-exports.AppService = AppService = __decorate([
+exports.TestConsumer = TestConsumer;
+exports.TestConsumer = TestConsumer = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [producer_service_1.ProducerService])
-], AppService);
-//# sourceMappingURL=app.service.js.map
+    __metadata("design:paramtypes", [consumer_service_1.ConsumerService])
+], TestConsumer);
+//# sourceMappingURL=test.consumer.js.map

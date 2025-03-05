@@ -11,6 +11,8 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
+const kafka_module_1 = require("./kafka/kafka.module");
+const test_consumer_1 = require("./kafka/test.consumer");
 const reports_entity_1 = require("./reports/reports.entity");
 const reports_module_1 = require("./reports/reports.module");
 const users_entity_1 = require("./users/users.entity");
@@ -29,9 +31,10 @@ exports.AppModule = AppModule = __decorate([
             }),
             users_module_1.UsersModule,
             reports_module_1.ReportsModule,
+            kafka_module_1.KafkaModule,
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        providers: [app_service_1.AppService, test_consumer_1.TestConsumer],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map
