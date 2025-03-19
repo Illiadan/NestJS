@@ -8,33 +8,57 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
+const config_1 = require("@nestjs/config");
+const core_1 = require("@nestjs/core");
 const typeorm_1 = require("@nestjs/typeorm");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
-const kafka_module_1 = require("./kafka/kafka.module");
-const test_consumer_1 = require("./kafka/test.consumer");
 const reports_entity_1 = require("./reports/reports.entity");
 const reports_module_1 = require("./reports/reports.module");
 const users_entity_1 = require("./users/users.entity");
 const users_module_1 = require("./users/users.module");
+const cookieSession = require('cookie-session');
 let AppModule = class AppModule {
+    configure(consumer) {
+        consumer
+            .apply(cookieSession({
+            keys: ['asd'],
+        }))
+            .forRoutes('*');
+    }
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            typeorm_1.TypeOrmModule.forRoot({
-                type: 'sqlite',
-                database: 'db.sqlite',
-                entities: [users_entity_1.User, reports_entity_1.Report],
-                synchronize: true,
+            config_1.ConfigModule.forRoot({
+                isGlobal: true,
+                envFilePath: `.env.${process.env.NODE_ENV}`,
+            }),
+            typeorm_1.TypeOrmModule.forRootAsync({
+                inject: [config_1.ConfigService],
+                useFactory: (config) => {
+                    return {
+                        type: 'sqlite',
+                        database: config.get('DB_NAME'),
+                        entities: [users_entity_1.User, reports_entity_1.Report],
+                        synchronize: true,
+                    };
+                },
             }),
             users_module_1.UsersModule,
             reports_module_1.ReportsModule,
-            kafka_module_1.KafkaModule,
         ],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService, test_consumer_1.TestConsumer],
+        providers: [
+            app_service_1.AppService,
+            {
+                provide: core_1.APP_PIPE,
+                useValue: new common_1.ValidationPipe({
+                    whitelist: true,
+                }),
+            },
+        ],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

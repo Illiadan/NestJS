@@ -11,27 +11,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppService = void 0;
 const common_1 = require("@nestjs/common");
-const producer_service_1 = require("./kafka/producer.service");
 let AppService = class AppService {
-    producerService;
-    constructor(producerService) {
-        this.producerService = producerService;
-    }
+    constructor() { }
     async getHello() {
-        await this.producerService.produce({
-            topic: 'test',
-            messages: [
-                {
-                    value: 'Hello World',
-                },
-            ],
-        });
         return 'Hello World!';
     }
 };
 exports.AppService = AppService;
 exports.AppService = AppService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [producer_service_1.ProducerService])
+    __metadata("design:paramtypes", [])
 ], AppService);
 //# sourceMappingURL=app.service.js.map
