@@ -2,11 +2,12 @@ import { MiddlewareConsumer, Module, ValidationPipe } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_PIPE } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DataSource, DataSourceOptions } from 'typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { Report } from './reports/reports.entity';
 import { ReportsModule } from './reports/reports.module';
-import { User } from './users/users.entity';
+import { DevDataSourceOptions } from './typeorm/db/dev.data-source';
+import { TestDataSourceOptions } from './typeorm/db/test.data-source';
 import { UsersModule } from './users/users.module';
 
 const cookieSession = require('cookie-session');
@@ -19,13 +20,16 @@ const cookieSession = require('cookie-session');
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => {
-        return {
-          type: 'sqlite',
-          database: config.get<string>('DB_NAME'),
-          entities: [User, Report],
-          synchronize: true,
-        };
+      useFactory: () => {
+        if (process.env.NODE_ENV === 'test') {
+          return TestDataSourceOptions;
+        }
+
+        return DevDataSourceOptions;
+      },
+      dataSourceFactory: async (options: DataSourceOptions) => {
+        const dataSource = await new DataSource(options).initialize();
+        return dataSource;
       },
     }),
     UsersModule,
@@ -43,11 +47,12 @@ const cookieSession = require('cookie-session');
   ],
 })
 export class AppModule {
+  constructor(private readonly configService: ConfigService) {}
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(
         cookieSession({
-          keys: ['asd'],
+          keys: [this.configService.get('COOKIE_KEY')],
         }),
       )
       .forRoutes('*');

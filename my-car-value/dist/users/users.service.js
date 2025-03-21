@@ -16,7 +16,7 @@ exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
-const users_entity_1 = require("./users.entity");
+const users_entity_1 = require("./entities/users.entity");
 let UsersService = class UsersService {
     repo;
     constructor(repo) {

@@ -10,9 +10,9 @@ exports.UsersModule = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const auth_service_1 = require("./auth.service");
+const users_entity_1 = require("./entities/users.entity");
 const current_user_middleware_1 = require("./middlewares/current-user.middleware");
 const users_controller_1 = require("./users.controller");
-const users_entity_1 = require("./users.entity");
 const users_service_1 = require("./users.service");
 let UsersModule = class UsersModule {
     configure(consumer) {

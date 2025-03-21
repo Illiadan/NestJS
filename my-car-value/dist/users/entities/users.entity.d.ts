@@ -1,4 +1,4 @@
-import { Report } from 'src/reports/reports.entity';
+import { Report } from '../../reports/entities/reports.entity';
 export declare class User {
     id: number;
     email: string;

@@ -1,4 +1,4 @@
-import { User } from 'src/users/users.entity';
+import { User } from '../../users/entities/users.entity';
 export declare class Report {
     id: number;
     approved: boolean;

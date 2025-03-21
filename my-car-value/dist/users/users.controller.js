@@ -21,7 +21,7 @@ const current_user_decorator_1 = require("./decorators/current-user.decorator");
 const create_user_dto_1 = require("./dtos/create-user.dto");
 const update_user_dto_1 = require("./dtos/update-user.dto");
 const user_dto_1 = require("./dtos/user.dto");
-const users_entity_1 = require("./users.entity");
+const users_entity_1 = require("./entities/users.entity");
 const users_service_1 = require("./users.service");
 let UsersController = class UsersController {
     usersService;
