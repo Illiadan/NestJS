@@ -1,13 +1,10 @@
 import { MiddlewareConsumer, Module, ValidationPipe } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_PIPE } from '@nestjs/core';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { DataSource, DataSourceOptions } from 'typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { DbModule } from './db/db.module';
 import { ReportsModule } from './reports/reports.module';
-import { DevDataSourceOptions } from './typeorm/db/dev.data-source';
-import { TestDataSourceOptions } from './typeorm/db/test.data-source';
 import { UsersModule } from './users/users.module';
 
 const cookieSession = require('cookie-session');
@@ -18,20 +15,7 @@ const cookieSession = require('cookie-session');
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`,
     }),
-    TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: () => {
-        if (process.env.NODE_ENV === 'test') {
-          return TestDataSourceOptions;
-        }
-
-        return DevDataSourceOptions;
-      },
-      dataSourceFactory: async (options: DataSourceOptions) => {
-        const dataSource = await new DataSource(options).initialize();
-        return dataSource;
-      },
-    }),
+    DbModule,
     UsersModule,
     ReportsModule,
   ],

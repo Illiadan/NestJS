@@ -13,13 +13,10 @@ exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const core_1 = require("@nestjs/core");
-const typeorm_1 = require("@nestjs/typeorm");
-const typeorm_2 = require("typeorm");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
+const db_module_1 = require("./db/db.module");
 const reports_module_1 = require("./reports/reports.module");
-const dev_data_source_1 = require("./typeorm/db/dev.data-source");
-const test_data_source_1 = require("./typeorm/db/test.data-source");
 const users_module_1 = require("./users/users.module");
 const cookieSession = require('cookie-session');
 let AppModule = class AppModule {
@@ -43,19 +40,7 @@ exports.AppModule = AppModule = __decorate([
                 isGlobal: true,
                 envFilePath: `.env.${process.env.NODE_ENV}`,
             }),
-            typeorm_1.TypeOrmModule.forRootAsync({
-                inject: [config_1.ConfigService],
-                useFactory: () => {
-                    if (process.env.NODE_ENV === 'test') {
-                        return test_data_source_1.TestDataSourceOptions;
-                    }
-                    return dev_data_source_1.DevDataSourceOptions;
-                },
-                dataSourceFactory: async (options) => {
-                    const dataSource = await new typeorm_2.DataSource(options).initialize();
-                    return dataSource;
-                },
-            }),
+            db_module_1.DbModule,
             users_module_1.UsersModule,
             reports_module_1.ReportsModule,
         ],
